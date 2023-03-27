@@ -1,0 +1,943 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Swagger Dindin 2.0 - OpenAPI 3.0",
+    "description": "Este é um exemplo de como usar a API Dindin 2.0.\nUm desafio proposto pela [Cubos Academy](https://aulas.cubos.academy/) durante o curso de desevolvimento do software (DDS) da turma 09.\n\nAlgumas informações importantes:\n\n- Para autenticação, enviar o token JWT no formato Bearer [token]\n- Todas as rotas abaixo de /login e /usuario exigem autenticação\n- O parâmetro id sempre deve ser um número inteiro positivo\n- O parâmetro email sempre deve ser um e-mail válido\n\nAlguns links úteis:\n- [Repositório Dindin 2.0](https://github.com/wandersonareis/desafio-frontend-03-dindin-t09)\n- [O código-fonte da API Dindin 2.0](https://github.com/wandersonareis/desafio-backend-03-dindin)",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "1.0.11"
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3004"
+    }
+  ],
+  "contact": {
+    "name": "Equipe de Desenvolvimento",
+    "url": "https://github.com/wandersonareis",
+    "email": "contato@exemplo.com.br"
+  },
+  "tags": [
+    {
+      "name": "Login",
+      "description": "Autenticação do usuário"
+    },
+    {
+      "name": "Cadastro",
+      "description": "Cadastro de novos usuários"
+    },
+    {
+      "name": "Usuário",
+      "description": "Gerenciamento do usuário"
+    },
+    {
+      "name": "Transações",
+      "description": "Transações financeiras"
+    },
+    {
+      "name": "Transação",
+      "description": "Transação financeira do usuário"
+    },
+    {
+      "name": "Extrato",
+      "description": "Extrato das transações financeiras do usuário"
+    },
+    {
+      "name": "Categorias",
+      "description": "Lista de categorias disponíveis para as transações"
+    }
+  ],
+  "paths": {
+    "/login": {
+      "post": {
+        "tags": [
+          "Login"
+        ],
+        "summary": "Login do usuário",
+        "description": "Faz o login do usuário",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "Endereço de email do usuário"
+                  },
+                  "senha": {
+                    "type": "string",
+                    "description": "Senha do usuário"
+                  }
+                },
+                "example": {
+                  "email": "joao@example.com",
+                  "senha": "123456"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Usuário autenticado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "usuario": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer"
+                        },
+                        "nome": {
+                          "type": "string"
+                        },
+                        "email": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "token": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "usuario": {
+                    "nome": "João",
+                    "email": "joao@example.com"
+                  },
+                  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjc5NzI5MTE0LCJleHAiOjE2Nzk3NTc5MTR9.GB3oKlMD5bmI51ji3ubtzgYRGU3l1XgjbV9ycH1qvNU"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Credenciais inválidas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "mensagem": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "mensagem": "Usuário e/ou senha inválido(s)."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/usuario": {
+      "post": {
+        "tags": [
+          "Cadastro"
+        ],
+        "summary": "Cria um usuário",
+        "description": "Essa é a rota que será utilizada para cadastrar um novo usuario.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nome": {
+                    "type": "string",
+                    "description": "Nome do usuário"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Endereço de email do usuário"
+                  },
+                  "senha": {
+                    "type": "string",
+                    "description": "Senha do usuário"
+                  }
+                },
+                "required": [
+                  "nome",
+                  "email",
+                  "senha"
+                ],
+                "example": {
+                  "nome": "João",
+                  "email": "joao@example.com",
+                  "senha": "senha123"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Usuário criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "nome": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "id": 12,
+                    "nome": "João",
+                    "email": "joao@example.com"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/EmailUniqueError"
+          }
+        }
+      }
+    },
+    "/auth/usuario": {
+      "get": {
+        "tags": [
+          "Usuário"
+        ],
+        "summary": "Detalhar usuário",
+        "description": "Retorna informações sobre um usuário",
+        "security": [
+          {
+            "jwt": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Informações do usuário autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "example": 12
+                    },
+                    "nome": {
+                      "type": "string",
+                      "example": "João"
+                    },
+                    "email": {
+                      "type": "string",
+                      "example": "joao@example.com"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "419": {
+            "$ref": "#/components/responses/AuthenticationTimeout"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Usuário"
+        ],
+        "summary": "Atualizar usuário",
+        "description": "Atualiza informações de um usuário",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nome": {
+                    "type": "string",
+                    "description": "Nome do usuário"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Endereço de email do usuário"
+                  },
+                  "senha": {
+                    "type": "string",
+                    "description": "Senha do usuário"
+                  }
+                },
+                "required": [
+                  "nome",
+                  "email",
+                  "senha"
+                ],
+                "example": {
+                  "nome": "João",
+                  "email": "joao@example.com",
+                  "senha": "senha123"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwt": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Usuário atualizado"
+          },
+          "400": {
+            "$ref": "#/components/responses/EmailUniqueError"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "419": {
+            "$ref": "#/components/responses/AuthenticationTimeout"
+          }
+        }
+      }
+    },
+    "/auth/categoria": {
+      "get": {
+        "tags": [
+          "Categorias"
+        ],
+        "summary": "Listar categorias",
+        "description": "Essa é a rota que será chamada quando o usuario logado quiser listar todas as categorias cadastradas.",
+        "security": [
+          {
+            "jwt": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retorna um array de objetos contendo todas as categorias disponíveis.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "nome": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "example": [
+                    {
+                      "id": 1,
+                      "nome": "Alimentação"
+                    },
+                    {
+                      "id": 2,
+                      "nome": "Assinaturas e Serviços"
+                    },
+                    {
+                      "id": 3,
+                      "nome": "Casa"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "419": {
+            "$ref": "#/components/responses/AuthenticationTimeout"
+          }
+        }
+      }
+    },
+    "/auth/transacao": {
+      "get": {
+        "tags": [
+          "Transações"
+        ],
+        "summary": "Listar transações do usuário logado",
+        "description": "Essa é a rota que será chamada quando o usuario logado quiser listar todas as suas transações cadastradas.",
+        "security": [
+          {
+            "jwt": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "filtro[]",
+            "in": "query",
+            "description": "Filtro opcional para busca de transações. Pode ser usado para filtrar por categoria.\n\nÉ possível obter a lista de categorias disponíveis através da rota /auth/categoria.\n\nExemplos de filtros: Vendas, Roupas, etc.",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retorna um array de objetos contendo todas as transações disponíveis.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "descricao": {
+                        "type": "string"
+                      },
+                      "valor": {
+                        "type": "integer",
+                        "description": "Valor em centavos"
+                      },
+                      "data": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "usuario_id": {
+                        "type": "integer"
+                      },
+                      "categoria_nome": {
+                        "type": "string"
+                      },
+                      "categoria_id": {
+                        "type": "integer"
+                      },
+                      "tipo": {
+                        "type": "string",
+                        "enum": [
+                          "entrada",
+                          "saida"
+                        ]
+                      }
+                    }
+                  },
+                  "example": [
+                    {
+                      "id": 59,
+                      "descricao": "atualizado",
+                      "valor": 10000,
+                      "data": "2022-09-18T10:03:42.000Z",
+                      "usuario_id": 1,
+                      "categoria_nome": "Salário",
+                      "categoria_id": 6,
+                      "tipo": "entrada"
+                    },
+                    {
+                      "id": 60,
+                      "descricao": "atualizado",
+                      "valor": 986918,
+                      "data": "2023-02-01T20:29:32.000Z",
+                      "usuario_id": 1,
+                      "categoria_nome": "Vendas",
+                      "categoria_id": 15,
+                      "tipo": "saida"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "419": {
+            "$ref": "#/components/responses/AuthenticationTimeout"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Transações"
+        ],
+        "summary": "Cadastrar transação para o usuário logado",
+        "description": "Essa é a rota que será utilizada para cadastrar uma transação associada ao usuário logado.",
+        "security": [
+          {
+            "jwt": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "descricao": {
+                    "type": "string",
+                    "description": "Descrição da transação"
+                  },
+                  "valor": {
+                    "type": "integer",
+                    "description": "Valor em centavos"
+                  },
+                  "data": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "categoria_id": {
+                    "type": "integer",
+                    "tipo": {
+                      "type": "string",
+                      "enum": [
+                        "entrada",
+                        "saida"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "descricao",
+                  "valor",
+                  "data",
+                  "categoria_id",
+                  "tipo"
+                ],
+                "example": {
+                  "descricao": "Sabonete",
+                  "valor": 986918,
+                  "data": "2023-02-01T20:29:32.000Z",
+                  "categoria_id": 15,
+                  "tipo": "saida"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Retorna um objeto contendo as informações da transação cadastrada.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "descricao": {
+                      "type": "string"
+                    },
+                    "valor": {
+                      "type": "integer",
+                      "description": "Valor em centavos"
+                    },
+                    "data": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "usuario_id": {
+                      "type": "integer"
+                    },
+                    "categoria_nome": {
+                      "type": "string"
+                    },
+                    "categoria_id": {
+                      "type": "integer"
+                    },
+                    "tipo": {
+                      "type": "string",
+                      "enum": [
+                        "entrada",
+                        "saida"
+                      ]
+                    }
+                  },
+                  "example": {
+                    "id": 60,
+                    "descricao": "Sabonete",
+                    "valor": 986918,
+                    "data": "2023-02-01T20:29:32.000Z",
+                    "usuario_id": 1,
+                    "categoria_nome": "Vendas",
+                    "categoria_id": 15,
+                    "tipo": "saida"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "419": {
+            "$ref": "#/components/responses/AuthenticationTimeout"
+          }
+        }
+      }
+    },
+    "/auth/transacao/{id}": {
+      "get": {
+        "tags": [
+          "Transação"
+        ],
+        "summary": "Detalhar uma transação do usuário logado",
+        "description": "Essa é a rota que será chamada quando o usuario logado quiser obter uma das suas transações cadastradas.",
+        "security": [
+          {
+            "jwt": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "ID da transação desejada.",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retorna um objeto contendo as informações da transação.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "descricao": {
+                      "type": "string"
+                    },
+                    "valor": {
+                      "type": "integer",
+                      "description": "Valor em centavos"
+                    },
+                    "data": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "usuario_id": {
+                      "type": "integer"
+                    },
+                    "categoria_nome": {
+                      "type": "string"
+                    },
+                    "categoria_id": {
+                      "type": "integer"
+                    },
+                    "tipo": {
+                      "type": "string",
+                      "enum": [
+                        "entrada",
+                        "saida"
+                      ]
+                    }
+                  },
+                  "example": {
+                    "id": 60,
+                    "descricao": "atualizado",
+                    "valor": 986918,
+                    "data": "2023-02-01T20:29:32.000Z",
+                    "usuario_id": 1,
+                    "categoria_nome": "Vendas",
+                    "categoria_id": 15,
+                    "tipo": "saida"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/TransactionNotFounded"
+          },
+          "419": {
+            "$ref": "#/components/responses/AuthenticationTimeout"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Transação"
+        ],
+        "summary": "Atualizar transação do usuário logado",
+        "description": "Essa é a rota que será chamada quando o usuario logado quiser atualizar uma das suas transações cadastradas.",
+        "security": [
+          {
+            "jwt": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "ID da transação desejada.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "descricao": {
+                    "type": "string"
+                  },
+                  "valor": {
+                    "type": "number"
+                  },
+                  "data": {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "categoria_id": {
+                    "type": "integer",
+                    "format": "int64"
+                  },
+                  "tipo": {
+                    "type": "string",
+                    "enum": [
+                      "entrada",
+                      "saida"
+                    ]
+                  }
+                },
+                "required": [
+                  "descricao",
+                  "valor",
+                  "data",
+                  "categoria_id",
+                  "tipo"
+                ],
+                "example": {
+                  "descricao": "Sapato amarelo",
+                  "valor": 15800,
+                  "data": "2022-03-23 12:35:00",
+                  "categoria_id": 4,
+                  "tipo": "saida"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Transação atualizada."
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/TransactionNotFounded"
+          },
+          "419": {
+            "$ref": "#/components/responses/AuthenticationTimeout"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Transação"
+        ],
+        "summary": "Excluir transação do usuário logado",
+        "description": "Essa é a rota que será chamada quando o usuario logado quiser excluir uma das suas transações cadastradas.",
+        "security": [
+          {
+            "jwt": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "ID da transação desejada.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Transação deletada."
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/TransactionNotFounded"
+          },
+          "419": {
+            "$ref": "#/components/responses/AuthenticationTimeout"
+          }
+        }
+      }
+    },
+    "/auth/transacao/extrato": {
+      "get": {
+        "summary": "Obter extrato de transações",
+        "description": "Retorna o extrato de todas as transações cadastradas do usuário logado.",
+        "tags": [
+          "Extrato"
+        ],
+        "security": [
+          {
+            "jwt": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Extrato obtido com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "entrada": {
+                      "type": "number",
+                      "description": "Soma de todas as transações do tipo entrada"
+                    },
+                    "saida": {
+                      "type": "number",
+                      "description": "Soma de todas as transações do tipo saída"
+                    }
+                  }
+                },
+                "example": {
+                  "entrada": 300000,
+                  "saida": 15800
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "419": {
+            "$ref": "#/components/responses/AuthenticationTimeout"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "jwt": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header",
+        "description": "Para autenticação por JWT, informe um token no formato Bearer [token]."
+      }
+    },
+    "responses": {
+      "Unauthorized": {
+        "description": "Erro de autenticação",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mensagem": {
+                  "type": "string",
+                  "example": "Para acessar este recurso um token de autenticação válido deve ser enviado."
+                }
+              }
+            }
+          }
+        }
+      },
+      "EmailUniqueError": {
+        "description": "E-mail informado já está cadastrado no sistema",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mensagem": {
+                  "type": "string",
+                  "example": "Já existe usuário cadastrado com o e-mail informado."
+                }
+              }
+            }
+          }
+        }
+      },
+      "TransactionNotFounded": {
+        "description": "Transação não encontrada para o ID especificado.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mensagem": {
+                  "type": "string",
+                  "example": "Transação informada não encontrada."
+                }
+              }
+            }
+          }
+        }
+      },
+      "AuthenticationTimeout": {
+        "description": "Token de autorização expirado.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mensagem": {
+                  "type": "string",
+                  "example": "Autorização expirada."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
