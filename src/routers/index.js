@@ -4,9 +4,13 @@ const router = require("express").Router();
 
 router.use(require("./openRouters"));
 
-router.use('/auth', require("./authRouters"));
+router.use("/auth", require("./authRouters"));
 
-router.use(require("./swagger"))
+router.use(require("./swagger"));
+
+router.get("/", (req, res) => {
+  res.redirect("/docs");
+});
 
 router.use(notFoundHandler);
 router.use(errorHandler);
