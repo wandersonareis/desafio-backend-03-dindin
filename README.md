@@ -8,7 +8,7 @@
 
 ## Documentação da API
 
-Acesse a documentação da API em http://localhost:3004/docs
+Acesse a documentação em [API docs](https://dead-rose-seahorse-suit.cyclic.app/docs/)
 
 ## Funções
 
