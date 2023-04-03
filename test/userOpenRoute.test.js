@@ -25,6 +25,46 @@ describe("POST /usuario", () => {
       mensagem: "O e-mail informado já está sendo utilizado por outro usuário.",
     });
   });
+
+  test("Should return error 400 when the name field is mandatory", async () => {
+    const { nome, ...userWithoutName } = usuario;
+    const response = await request(baseURL).post("/usuario").send(userWithoutName).expect("Content-Type", /json/).expect(400);
+
+    expect(response.body).toMatchObject({
+      mensagem: "Dados inválidos",
+      erros: ["O campo nome é obrigatório"],
+    });
+  });
+
+  test("Should return error 400 when the email field is mandatory", async () => {
+    const { email, ...userWithoutEmail } = usuario;
+    const response = await request(baseURL).post("/usuario").send(userWithoutEmail).expect("Content-Type", /json/).expect(400);
+
+    expect(response.body).toMatchObject({
+      mensagem: "Dados inválidos",
+      erros: ["O campo email é obrigatório"],
+    });
+  });
+
+  test("Should return error 400 when the password field is mandatory", async () => {
+    const { senha, ...userWithoutPassword } = usuario;
+    const response = await request(baseURL).post("/usuario").send(userWithoutPassword).expect("Content-Type", /json/).expect(400);
+
+    expect(response.body).toMatchObject({
+      mensagem: "Dados inválidos",
+      erros: ["O campo senha é obrigatório"],
+    });
+  });
+
+  test("Should return error 400 when body is json valid but empty", async () => {
+    const empty = {};
+    const response = await request(baseURL).post("/usuario").send(empty).expect("Content-Type", /json/).expect(400);
+
+    expect(response.body).toMatchObject({
+      mensagem: "Dados inválidos",
+      erros: ["O campo nome é obrigatório", "O campo email é obrigatório", "O campo senha é obrigatório"],
+    });
+  });
 });
 
 describe("POST /login", () => {
