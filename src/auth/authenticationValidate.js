@@ -1,6 +1,5 @@
-const { findUserById } = require("../db/dbServices");
 const ErrorHandler = require("../middleware/errorHandling/errorHandler.class");
-const { passwordExclude } = require("../utils/passwordsUtil");
+const { findUserById } = require("../services/user.service");
 
 async function authenticationValidate(req, res, next) {
   const token = req.headers["authorization"]?.split(" ")[1];
@@ -11,12 +10,11 @@ async function authenticationValidate(req, res, next) {
 
     const jwt = require("jsonwebtoken");
     const { id: user_id } = jwt.verify(token, process.env.PGSECUREKEY);
-    const { rows, rowCount } = await findUserById(user_id);
-    const result = rows[0];
+    const user = await findUserById(user_id);
 
-    if (rowCount === 0) throw new ErrorHandler(authErrorMsg, 401);
+    if (!user) throw new ErrorHandler(authErrorMsg, 401);
 
-    req.user = passwordExclude(result);
+    req.user = user;
     next();
   } catch (error) {
     if (error.name === "TokenExpiredError") {

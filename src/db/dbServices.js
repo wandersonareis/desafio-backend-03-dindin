@@ -1,27 +1,6 @@
 const pool = require("./dbPool");
 
 /**
- * Busca um usuário no banco de dados pelo seu ID.
- *
- * @param {number} user_id - O ID do usuário a ser buscado.
- * @returns {Promise<object>} Uma promessa que resolve com o objeto do usuário encontrado.
- */
-async function findUserById(user_id) {
-  const user = await pool.query("select * from usuarios where id = $1", [user_id]);
-  return user;
-}
-
-/**
- * Busca um usuário no banco de dados pelo endereço de e-mail.
- *
- * @param {string} user_email - O endereço de e-mail do usuário a ser buscado.
- * @returns {Promise<Object>} Uma promessa que resolve com o resultado da consulta.
- */
-async function findUserByEmail(user_email) {
-  return await pool.query("select * from usuarios where email = $1", [user_email]);
-}
-
-/**
  * Busca todas as transações de um usuário no banco de dados pelo seu ID.
  *
  * @param {number} user_id - O ID do usuário cujas transações serão buscadas.
@@ -63,42 +42,6 @@ async function countTransaction(user_id, transaction_id) {
  */
 async function findUserTransactionsByCategoryId(user_id, categorie_id) {
   return await pool.query("select * from transacoes where usuario_id=$1 and categoria_id=$2", [user_id, categorie_id]);
-}
-
-/**
- * Conta o número de usuários no banco de dados com um determinado endereço de e-mail.
- *
- * @param {string} user_email - O endereço de e-mail a ser procurado.
- * @returns {Promise<number>} Uma promessa que resolve com o número de usuários com o endereço de e-mail fornecido.
- */
-async function countUserEmails(user_email) {
-  const result = await pool.query("select count(*) as count from usuarios where email = $1", [user_email]);
-  return parseInt(result.rows[0].count);
-}
-
-/**
- * Cria um novo usuário no banco de dados com o nome, endereço de e-mail e senha fornecidos.
- *
- * @param {string} user_name - O nome do novo usuário.
- * @param {string} user_email - O endereço de e-mail do novo usuário.
- * @param {string} user_password - A senha criptografada do novo usuário.
- * @returns {Promise<Object>} Uma promessa que resolve com o objeto que representa o novo usuário criado.
- */
-async function createtUser(user_name, user_email, user_password) {
-  return await pool.query("insert into usuarios (nome, email, senha) values ($1, $2, $3) returning *", [user_name, user_email, user_password]);
-}
-
-/**
- * Atualiza um usuário existente no banco de dados com um novo nome, endereço de e-mail e senha.
- *
- * @param {number} user_id - ID do usuário sendo atualizado
- * @param {string} user_name - O novo nome do usuário.
- * @param {string} user_email - O novo endereço de e-mail do usuário.
- * @param {string} user_password - A nova senha criptografada do usuário.
- * @returns {Promise<Object>} Uma promessa que resolve quando a atualização é concluída.
- */
-async function updateUser(user_id, user_name, user_email, user_password) {
-  return await pool.query("update usuarios set nome=$1, email=$2, senha=$3 where id=$4", [user_name, user_email, user_password, user_id]);
 }
 
 /**
@@ -208,14 +151,8 @@ async function transactionsValueSum(user_id, transaction_type) {
 }
 
 module.exports = {
-  createtUser,
-  updateUser,
-
-  findUserById,
-  findUserByEmail,
   findUserTransactions,
   findUserTransactionsByCategoryId,
-  countUserEmails,
 
   findTransaction,
   countTransaction,

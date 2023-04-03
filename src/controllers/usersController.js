@@ -1,15 +1,14 @@
 const jwt = require("jsonwebtoken");
 
-const { createtUser, updateUser } = require("../db/dbServices");
-const { cryptPassword, passwordExclude } = require("../utils/passwordsUtil");
+const { cryptPassword } = require("../utils/passwordsUtil");
+const { createtUser, updateUser } = require("../services/user.service");
 
 async function registerUser(req, res, next) {
   const { nome: body_name, email: body_email, senha: body_password } = req.body;
   try {
     const body_password_encoded = await cryptPassword(body_password);
-    const { rows } = await createtUser(body_name, body_email, body_password_encoded);
-
-    const result = passwordExclude(rows[0]);
+    const result = await createtUser(body_name, body_email, body_password_encoded);
+    
     return res.status(201).json(result);
   } catch (error) {
     next(error);
@@ -34,7 +33,8 @@ async function userUpdate(req, res, next) {
     const { id: user_id } = req.user;
     const { nome: name, email, senha: password } = req.body;
 
-    await updateUser(user_id, name, email, await cryptPassword(password));
+    const password_encoded = await cryptPassword(password);
+    await updateUser(user_id, name, email, password_encoded);
 
     return res.sendStatus(204);
   } catch (error) {
