@@ -73,12 +73,13 @@ async function transactionDelete(req, res, next) {
 async function transactionsHistorySum(req, res, next) {
   try {
     const { id: user_id } = req.user;
-    const credit_transactions = await transactionsValueSum(user_id, "entrada");
-    const debit_transactions = await transactionsValueSum(user_id, "saida");
+
+    const credit_transactions = await knex("transacoes").where({ usuario_id: user_id, tipo: "entrada" }).sum("valor").first();
+    const debit_transactions = await knex("transacoes").where({ usuario_id: user_id, tipo: "saida" }).sum("valor").first();
 
     return res.json({
-      entrada: credit_transactions,
-      saida: debit_transactions,
+      entrada: Number(credit_transactions.sum),
+      saida: Number(debit_transactions.sum),
     });
   } catch (error) {
     next(error);
