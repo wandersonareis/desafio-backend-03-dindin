@@ -30,11 +30,11 @@ async function userCommonMiddleware(req, res, next) {
 
   try {
     if (emailExists && user_email !== body_email) {
-      throw new ErrorHandler("O e-mail informado já está sendo utilizado por outro usuário.", 401);
+      throw new ErrorHandler("O e-mail informado já está sendo utilizado por outro usuário.", 400);
     }
     
     if (emailExists && !user_email) {
-      throw new ErrorHandler("O e-mail informado já está sendo utilizado por outro usuário.", 401);
+      throw new ErrorHandler("O e-mail informado já está sendo utilizado por outro usuário.", 400);
     }
 
     next();
