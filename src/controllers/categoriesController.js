@@ -1,8 +1,8 @@
-const { categoriesItens } = require("../db/dbServices");
+const knex = require("../db/dbClient");
 
 async function categoriesList(req, res) {
-  const { rows: categories } = await categoriesItens();
+  const categories = await knex("categorias").select("*");
   return res.json(categories);
 }
 
-module.exports = { categoriesList };
+module.exports = categoriesList;
