@@ -2,32 +2,32 @@ const request = require("supertest");
 const baseURL = "http://localhost:3004";
 
 describe("POST /usuario", () => {
-  const usuario = {
+  const userCreate = {
     nome: "João",
     email: "joao@example.com",
     senha: "senha123",
   };
 
-  test("Must create a new user", async () => {
-    const response = await request(baseURL).post("/usuario").send(usuario).expect("Content-Type", /json/).expect(201);
+  it("Must create a new user", async () => {
+    const response = await request(baseURL).post("/usuario").send(userCreate).expect("Content-Type", /json/).expect(201);
 
     expect(response.body).toMatchObject({
       id: expect.any(Number),
-      nome: usuario.nome,
-      email: usuario.email,
+      nome: userCreate.nome,
+      email: userCreate.email,
     });
   });
 
-  test("Should return error 400 when the e-mail is already registered", async () => {
-    const response = await request(baseURL).post("/usuario").send(usuario).expect("Content-Type", /json/).expect(400);
+  it("Should return error 400 when the e-mail is already registered", async () => {
+    const response = await request(baseURL).post("/usuario").send(userCreate).expect("Content-Type", /json/).expect(400);
 
     expect(response.body).toMatchObject({
       mensagem: "O e-mail informado já está sendo utilizado por outro usuário.",
     });
   });
 
-  test("Should return error 400 when the name field is mandatory", async () => {
-    const { nome, ...userWithoutName } = usuario;
+  it("Should return error 400 when the name field is mandatory", async () => {
+    const { nome, ...userWithoutName } = userCreate;
     const response = await request(baseURL).post("/usuario").send(userWithoutName).expect("Content-Type", /json/).expect(400);
 
     expect(response.body).toMatchObject({
@@ -36,27 +36,15 @@ describe("POST /usuario", () => {
     });
   });
 
-  test("Should return error 400 when the email field is mandatory", async () => {
-    const { email, ...userWithoutEmail } = usuario;
-    const response = await request(baseURL).post("/usuario").send(userWithoutEmail).expect("Content-Type", /json/).expect(400);
-
-    expect(response.body).toMatchObject({
-      mensagem: "Dados inválidos",
-      erros: ["O campo email é obrigatório"],
-    });
+  it("Should return error 400 when the email field is mandatory", async () => {
+    await emailExistsException("/usuario", userCreate);
   });
 
-  test("Should return error 400 when the password field is mandatory", async () => {
-    const { senha, ...userWithoutPassword } = usuario;
-    const response = await request(baseURL).post("/usuario").send(userWithoutPassword).expect("Content-Type", /json/).expect(400);
-
-    expect(response.body).toMatchObject({
-      mensagem: "Dados inválidos",
-      erros: ["O campo senha é obrigatório"],
-    });
+  it("Should return error 400 when the password field is mandatory", async () => {
+    await passwordExistsException("/usuario", userCreate);
   });
 
-  test("Should return error 400 when body is json valid but empty", async () => {
+  it("Should return error 400 when body is json valid but empty", async () => {
     const empty = {};
     const response = await request(baseURL).post("/usuario").send(empty).expect("Content-Type", /json/).expect(400);
 
@@ -97,3 +85,23 @@ describe("POST /login", () => {
     });
   });
 });
+
+const emailExistsException = async (rota, userLogin) => {
+  const { email, ...userWithoutEmail } = userLogin;
+  const response = await request(baseURL).post(rota).send(userWithoutEmail).expect("Content-Type", /json/).expect(400);
+
+  expect(response.body).toMatchObject({
+    mensagem: "Dados inválidos",
+    erros: ["O campo email é obrigatório"],
+  });
+};
+
+const passwordExistsException = async (rota, userLogin) => {
+  const { senha, ...userWithoutPassword } = userLogin;
+  const response = await request(baseURL).post(rota).send(userWithoutPassword).expect("Content-Type", /json/).expect(400);
+
+  expect(response.body).toMatchObject({
+    mensagem: "Dados inválidos",
+    erros: ["O campo senha é obrigatório"],
+  });
+};
