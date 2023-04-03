@@ -1,5 +1,6 @@
 //const knex = require("../db/dbClient");
 const { findUserTransactions, updateTransaction, deleteTansaction, transactionsValueSum } = require("../db/dbServices");
+const ErrorHandler = require("../middleware/errorHandling/errorHandler.class");
 
 async function transactionCreate(req, res, next) {
   try {
@@ -101,9 +102,12 @@ async function transactionsListByUser(req, res, next) {
 }
 
 async function transactionsByCategoryId(req, res, next) {
-  if (req.transaction) return res.json(req.transaction);
-
-  next();
+  try {
+    if (req.transaction) return res.json(req.transaction);
+    throw new ErrorHandler("Transação informada não encontrada.", 404);
+  } catch (error) {
+    next(error);
+  }
 }
 
 module.exports = {
