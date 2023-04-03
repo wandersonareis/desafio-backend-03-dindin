@@ -1,4 +1,4 @@
-//const knex = require("../db/dbClient");
+const knex = require("../db/dbClient");
 const { findUserTransactions, updateTransaction, deleteTansaction, transactionsValueSum } = require("../db/dbServices");
 const ErrorHandler = require("../middleware/errorHandling/errorHandler.class");
 
@@ -58,11 +58,11 @@ async function transactionUpdate(req, res, next) {
 }
 
 async function transactionDelete(req, res, next) {
-  const { id: transacao_id } = req.params;
+  const { id: transaction_id } = req.params;
   const { id: user_id } = req.user;
 
   try {
-    await deleteTansaction(transacao_id, user_id);
+    await knex("transacoes").del().where({ id: transaction_id }).andWhere({ usuario_id: user_id });
 
     return res.sendStatus(204);
   } catch (error) {
