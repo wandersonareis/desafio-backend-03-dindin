@@ -1,3 +1,4 @@
+const knex = require("../db/dbClient");
 const ErrorHandler = require("../middleware/errorHandling/errorHandler.class");
 
 async function authenticationValidate(req, res, next) {
