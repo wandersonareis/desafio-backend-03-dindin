@@ -1,14 +1,15 @@
+const knex = require("../db/dbClient");
 const jwt = require("jsonwebtoken");
 
 const { cryptPassword } = require("../utils/passwordsUtil");
-const { createtUser, updateUser } = require("../services/user.service");
+const { updateUser } = require("../services/user.service");
 
 async function registerUser(req, res, next) {
   const { nome: body_name, email: body_email, senha: body_password } = req.body;
   try {
     const body_password_encoded = await cryptPassword(body_password);
-    const result = await createtUser(body_name, body_email, body_password_encoded);
-    
+    const [result] = await knex("usuarios").insert({ nome: body_name, email: body_email, senha: body_password_encoded }).returning(["id", "nome", "email"]);
+
     return res.status(201).json(result);
   } catch (error) {
     next(error);
