@@ -35,19 +35,20 @@ async function transactionCreate(req, res) {
 async function transactionUpdate(req, res) {
   const { tipo: transaction_type, descricao: transaction_description, valor: transaction_value, data: transaction_date } = req.body;
   const { id: user_id } = req.user;
-  const { id: transacao_id } = req.transaction;
-  const { id: categorie_id, descricao: categorie_name } = req.categorie;
+  const { id: transaction_id } = req.transaction;
+  const { id: category_id, descricao: category_name } = req.categorie;
   try {
-    await updateTransaction(
-      user_id,
-      transacao_id,
-      transaction_type,
-      transaction_description,
-      transaction_value,
-      transaction_date,
-      categorie_id,
-      categorie_name
-    );
+    await knex("transacoes")
+      .update({
+        tipo: transaction_type,
+        descricao: transaction_description,
+        valor: transaction_value,
+        data: transaction_date,
+        categoria_id: category_id,
+        categoria_nome: category_name,
+      })
+      .where({ id: transaction_id })
+      .andWhere({ usuario_id: user_id });
 
     return res.sendStatus(204);
   } catch (error) {
