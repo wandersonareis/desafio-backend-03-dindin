@@ -3,7 +3,7 @@ const express = require("express");
 const cors = require("cors");
 
 const routers = require("./routers");
-const { errorHandler } = require("./middleware");
+const { errorHandler, errorLogger } = require("./middleware");
 const port = process.env.SVRPORT || 3004;
 
 const app = express();
@@ -24,6 +24,7 @@ app.use((err, req, res, next) => {
 
 app.use(routers);
 
+app.use(errorLogger);
 app.use(errorHandler);
 
 app.listen(port, () => {

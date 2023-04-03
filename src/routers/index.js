@@ -1,4 +1,4 @@
-const { errorHandler, notFoundHandler } = require("../middleware");
+const { errorHandler, notFoundHandler, errorLogger } = require("../middleware");
 
 const router = require("express").Router();
 
@@ -13,6 +13,7 @@ router.get("/", (req, res) => {
 });
 
 router.use(notFoundHandler);
+router.use(errorLogger);
 router.use(errorHandler);
 
 module.exports = router;

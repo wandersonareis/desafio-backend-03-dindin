@@ -1,7 +1,7 @@
-const knex = require("../db/dbClient");
+//const knex = require("../db/dbClient");
 const { findUserTransactions, updateTransaction, deleteTansaction, transactionsValueSum } = require("../db/dbServices");
 
-async function transactionCreate(req, res) {
+async function transactionCreate(req, res, next) {
   try {
     const {
       tipo: transaction_type,
@@ -32,7 +32,7 @@ async function transactionCreate(req, res) {
   }
 }
 
-async function transactionUpdate(req, res) {
+async function transactionUpdate(req, res, next) {
   const { tipo: transaction_type, descricao: transaction_description, valor: transaction_value, data: transaction_date } = req.body;
   const { id: user_id } = req.user;
   const { id: transaction_id } = req.transaction;
@@ -56,7 +56,7 @@ async function transactionUpdate(req, res) {
   }
 }
 
-async function transactionDelete(req, res) {
+async function transactionDelete(req, res, next) {
   const { id: transacao_id } = req.params;
   const { id: user_id } = req.user;
 
@@ -69,7 +69,7 @@ async function transactionDelete(req, res) {
   }
 }
 
-async function transactionsHistorySum(req, res) {
+async function transactionsHistorySum(req, res, next) {
   try {
     const { id: user_id } = req.user;
     const credit_transactions = await transactionsValueSum(user_id, "entrada");
@@ -83,7 +83,7 @@ async function transactionsHistorySum(req, res) {
     next(error);
   }
 }
-async function transactionsListByUser(req, res) {
+async function transactionsListByUser(req, res, next) {
   try {
     const { id: user_id } = req.user;
     const filters = req.filters;
