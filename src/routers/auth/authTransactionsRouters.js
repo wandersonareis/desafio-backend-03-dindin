@@ -2,7 +2,7 @@ const router = require("express").Router();
 
 const {
   transactionCreate,
-  transactionsByCategoryId,
+  transactionsById,
   transactionUpdate,
   transactionDelete,
   transactionsHistorySum,
@@ -16,7 +16,7 @@ router.get("/transacao/extrato", transactionsHistorySum);
 
 router.param("id", transactionIdValidateMiddleware);
 
-router.get("/transacao/:id", transactionsByCategoryId);
+router.get("/transacao/:id", transactionsById);
 router.put("/transacao/:id", transactionMainSchema, categoryValidateMiddleware, transactionUpdate);
 router.delete("/transacao/:id", transactionDelete);
 router.get("/transacao", transactionFilterValidate, transactionsListByUser);

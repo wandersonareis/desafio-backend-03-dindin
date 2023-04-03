@@ -101,7 +101,7 @@ async function transactionsListByUser(req, res, next) {
   }
 }
 
-async function transactionsByCategoryId(req, res, next) {
+async function transactionsById(req, res, next) {
   try {
     if (req.transaction) return res.json(req.transaction);
     throw new ErrorHandler("Transação informada não encontrada.", 404);
@@ -116,5 +116,5 @@ module.exports = {
   transactionUpdate,
   transactionDelete,
   transactionsHistorySum,
-  transactionsByCategoryId,
+  transactionsById,
 };
