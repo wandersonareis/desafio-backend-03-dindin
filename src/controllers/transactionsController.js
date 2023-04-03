@@ -61,7 +61,7 @@ async function transactionDelete(req, res, next) {
   const { id: user_id } = req.user;
 
   try {
-    await knex("transacoes").del().where({ id: transaction_id }).andWhere({ usuario_id: user_id });
+    await knex("transacoes").del().where({ id: transaction_id, usuario_id: user_id });
 
     return res.sendStatus(204);
   } catch (error) {
@@ -89,7 +89,7 @@ async function transactionsListByUser(req, res, next) {
     const { id: user_id } = req.user;
     const filters = req.filters;
 
-    const transactions = await knex("transacoes").select("*").where("usuario_id", user_id);
+    const transactions = await knex("transacoes").select("*").where({ usuario_id: user_id });
 
     if (filters.length > 0 && transactions) {
       const transacionFiltered = transactions.filter((t) => filters.includes(t.categoria_nome));

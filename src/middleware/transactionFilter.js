@@ -1,4 +1,4 @@
-async function transactionFilterValidate(req, res, next) {
+async function transactionFilterValidateMiddleware(req, res, next) {
   const filters = req.query.filtro;
 
   req.filters = filters ? filters : [];
@@ -6,4 +6,4 @@ async function transactionFilterValidate(req, res, next) {
   next();
 }
 
-module.exports = { transactionFilterValidate };
+module.exports = transactionFilterValidateMiddleware;
