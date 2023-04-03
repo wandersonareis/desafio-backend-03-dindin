@@ -1,22 +1,32 @@
-const { createTransaction, findUserTransactions, updateTransaction, deleteTansaction, transactionsValueSum } = require("../db/dbServices");
+const knex = require("../db/dbClient");
+const { findUserTransactions, updateTransaction, deleteTansaction, transactionsValueSum } = require("../db/dbServices");
 
 async function transactionCreate(req, res) {
   try {
-    const { tipo: transaction_type, descricao: transaction_description, valor: transaction_value, data: transaction_date, categoria_id } = req.body;
+    const {
+      tipo: transaction_type,
+      descricao: transaction_description,
+      valor: transaction_value,
+      data: transaction_date,
+      categoria_id: category_id,
+    } = req.body;
+
     const { id: user_id } = req.user;
-    const { descricao: categorie_name } = req.categorie;
+    const { descricao: category_name } = req.categorie;
 
-    const { rows: transaction } = await createTransaction(
-      transaction_type,
-      transaction_description,
-      transaction_value,
-      transaction_date,
-      user_id,
-      categoria_id,
-      categorie_name
-    );
+    const [transaction] = await knex("transacoes")
+      .insert({
+        tipo: transaction_type,
+        descricao: transaction_description,
+        valor: transaction_value,
+        data: transaction_date,
+        usuario_id: user_id,
+        categoria_id: category_id,
+        categoria_nome: category_name,
+      })
+      .returning("*");
 
-    return res.status(201).json(transaction[0]);
+    return res.status(201).json(transaction);
   } catch (error) {
     next(error);
   }

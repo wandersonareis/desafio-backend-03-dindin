@@ -10,16 +10,16 @@ const {
 } = require("../../controllers/transactionsController");
 
 const { transactionMainSchema } = require("../../schemas");
-const { transactionIdValidate, transactionFilterValidate, transactionUpdateValidate, transactionCreateValidate } = require("../../middleware");
+const { transactionIdValidateMiddleware, transactionFilterValidate, categoryValidateMiddleware } = require("../../middleware");
 
 router.get("/transacao/extrato", transactionsHistorySum);
 
-router.param("id", transactionIdValidate);
+router.param("id", transactionIdValidateMiddleware);
 
 router.get("/transacao/:id", transactionsByCategoryId);
-router.put("/transacao/:id", transactionMainSchema, transactionUpdateValidate, transactionUpdate);
+router.put("/transacao/:id", transactionMainSchema, categoryValidateMiddleware, transactionUpdate);
 router.delete("/transacao/:id", transactionDelete);
 router.get("/transacao", transactionFilterValidate, transactionsListByUser);
-router.post("/transacao", transactionMainSchema, transactionCreateValidate, transactionCreate);
+router.post("/transacao", transactionMainSchema, categoryValidateMiddleware, transactionCreate);
 
 module.exports = router;

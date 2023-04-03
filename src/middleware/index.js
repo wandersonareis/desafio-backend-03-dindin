@@ -1,6 +1,7 @@
 const { userLoginValidate, userCommonMiddleware } = require("./userMiddleware");
-const { transactionCreateValidate, transactionUpdateValidate, transactionIdValidate } = require("./transactionMiddleware");
 const { transactionFilterValidate } = require("./transactionFilter");
+const transactionIdValidateMiddleware = require("./transactionMiddleware");
+const categoryValidateMiddleware = require("./categoryMiddleware")
 const errorHandler = require("./errorHandling/errorHandler");
 const notFoundHandler = require("./errorHandling/notFoundHandler");
 
@@ -8,9 +9,8 @@ module.exports = {
   userLoginValidate,
   userCommonMiddleware,
   transactionFilterValidate,
-  transactionCreateValidate,
-  transactionUpdateValidate,
-  transactionIdValidate,
+  transactionIdValidateMiddleware,
+  categoryValidateMiddleware,
   errorHandler,
   notFoundHandler,
 };
