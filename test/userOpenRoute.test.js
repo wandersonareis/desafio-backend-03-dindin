@@ -56,13 +56,13 @@ describe("POST /usuario", () => {
 });
 
 describe("POST /login", () => {
-  it("Must authenticate a user with valid credentials", async () => {
-    const usuario = {
-      email: "joao@example.com",
-      senha: "senha123",
-    };
+  const userLogin = {
+    email: "joao@example.com",
+    senha: "senha123",
+  };
 
-    const response = await request(baseURL).post("/login").send(usuario);
+  it("Must authenticate a user with valid credentials", async () => {
+    const response = await request(baseURL).post("/login").send(userLogin);
 
     expect(response.status).toBe(200);
     expect(response.body.usuario).toHaveProperty("id");
@@ -72,16 +72,34 @@ describe("POST /login", () => {
   });
 
   it("Should return error 400 when credentials are invalid", async () => {
-    const usuario = {
+    const wrongPassword = {
       email: "joao@example.com",
       senha: "senhaerrada",
     };
 
-    const response = await request(baseURL).post("/login").send(usuario);
+    const response = await request(baseURL).post("/login").send(wrongPassword);
 
     expect(response.status).toBe(400);
     expect(response.body).toMatchObject({
       mensagem: "Usuário e/ou senha inválido(s).",
+    });
+  });
+
+  it("Should return error 400 when the email field is mandatory", async () => {
+    await emailExistsException("/login", userLogin);
+  });
+
+  it("Should return error 400 when the password field is mandatory", async () => {
+    await passwordExistsException("/login", userLogin);
+  });
+
+  it("Should return error 400 when body is json valid but empty", async () => {
+    const empty = {};
+    const response = await request(baseURL).post("/login").send(empty).expect("Content-Type", /json/).expect(400);
+
+    expect(response.body).toMatchObject({
+      mensagem: "Dados inválidos",
+      erros: ["O campo email é obrigatório", "O campo senha é obrigatório"],
     });
   });
 });
