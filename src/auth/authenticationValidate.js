@@ -1,5 +1,4 @@
 const ErrorHandler = require("../middleware/errorHandling/errorHandler.class");
-const { findUserById } = require("../services/user.service");
 
 async function authenticationValidate(req, res, next) {
   const token = req.headers["authorization"]?.split(" ")[1];
@@ -10,7 +9,7 @@ async function authenticationValidate(req, res, next) {
 
     const jwt = require("jsonwebtoken");
     const { id: user_id } = jwt.verify(token, process.env.PGSECUREKEY);
-    const user = await findUserById(user_id);
+    const user = await knex("usuarios").first("id", "nome", "email").where({ id: user_id });
 
     if (!user) throw new ErrorHandler(authErrorMsg, 401);
 
