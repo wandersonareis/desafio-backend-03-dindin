@@ -88,9 +88,10 @@ async function transactionsListByUser(req, res, next) {
   try {
     const { id: user_id } = req.user;
     const filters = req.filters;
-    const { rows: transactions, rowCount: transactionsCount } = await findUserTransactions(user_id);
 
-    if (filters.length > 0 && transactionsCount > 0) {
+    const transactions = await knex("transacoes").select("*").where("usuario_id", user_id);
+
+    if (filters.length > 0 && transactions) {
       const transacionFiltered = transactions.filter((t) => filters.includes(t.categoria_nome));
       return res.json(transacionFiltered);
     }
