@@ -56,11 +56,11 @@ describe("Testes para a rota /auth/transacao", () => {
     expect(res.body.erros).toBeInstanceOf(Array);
   });
 
-  it("Deve retornar erro 401 quando não for enviado token de autenticação", async () => {
+  it("Must return error 401 when no authentication token is sent", async () => {
     await withoutTokenException();
   });
 
-  it("Deve retornar erro 419 quando o token de autenticação estiver expirado", async () => {
+  it("Should return error 419 when the authentication token is expired", async () => {
     await expiredTokenException();
   });
 });

@@ -11,7 +11,8 @@
     "watch": "node --watch ./src/index.js",
     "test": "jest",
     "authUserTest": "jest ./test/authUserRouters.test.js",
-    "authTransactionUserTest": "jest ./test/authTransactionUserRouters.test.js"
+    "authTransactionUserTest": "jest ./test/authTransactionUserRouters.test.js",
+    "authTransactionByIdTest": "jest ./test/authTransactionByIdRouters.test.js"
   },
   "keywords": [],
   "author": "",
