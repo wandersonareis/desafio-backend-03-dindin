@@ -373,7 +373,7 @@ paths:
                 categoria_id: 15
                 tipo: saida
       responses:
-        '200':
+        '201':
           description: Retorna um objeto contendo as informações da transação cadastrada.
           content:
             application/json:
