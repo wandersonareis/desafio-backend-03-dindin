@@ -4,7 +4,7 @@ const cors = require("cors");
 
 const routers = require("./routers");
 const { errorHandler, errorLogger } = require("./middleware");
-const port = process.env.SVRPORT || 3004;
+const port = process.env.PORT || 3004;
 
 const app = express();
 
